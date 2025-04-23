@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.*;
+
 public class APIStepDefs {
 
 
@@ -90,7 +92,7 @@ public class APIStepDefs {
     public void each_field_should_not_be_null(String path) {
 
         // OPT - 1
-        thenPart.body(path, Matchers.everyItem(Matchers.notNullValue()));
+        thenPart.body(path, Matchers.everyItem(notNullValue()));
 
         // OPT - 2
         List<String> allData = jp.getList(path);
@@ -118,7 +120,7 @@ public class APIStepDefs {
     public void following_fields_should_not_be_null(List<String> allPaths) {
 
         for (String eachPath : allPaths) {
-            thenPart.body(eachPath, Matchers.notNullValue());
+            thenPart.body(eachPath, notNullValue());
         }
 
     }
