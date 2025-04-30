@@ -11,6 +11,11 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
 
 public class APIStepDefs {
 
@@ -54,7 +59,32 @@ public class APIStepDefs {
 
     @Then("Each {string} field should not be null")
     public void each_field_should_note_be_null(String path) {
-        thenPart.body(path, Matchers.everyItem(Matchers.notNullValue()));
+        thenPart.body(path, Matchers.everyItem(notNullValue()));
+    }
+
+    // << --------US 02------- >>
+
+    @Given("Path param {string} is {string}")
+    public void path_param_is(String pathParam, String value) {
+        givenPart.pathParam(pathParam,value);
+        expectedID = value;
+
+    }
+
+    @Then("{string} field should be same with path param")
+    public void field_should_be_same_with_path_param(String path) {
+        String actualID = jp.getString(path);
+        Assert.assertEquals(expectedID,actualID);
+
+
+    }
+
+    @Then("following fields should not be null")
+    public void following_fields_should_not_be_null(List<String>allPaths) {
+        for (String eachPath : allPaths) {
+            thenPart.body(eachPath,notNullValue());
+        }
+
     }
 
 
