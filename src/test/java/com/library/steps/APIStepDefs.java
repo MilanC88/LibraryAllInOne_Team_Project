@@ -1,10 +1,7 @@
 package com.library.steps;
 
 import com.library.pages.BookPage;
-import com.library.utility.BrowserUtil;
-import com.library.utility.DB_Util;
-import com.library.utility.Driver;
-import com.library.utility.LibraryAPI_Util;
+import com.library.utility.*;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -142,7 +139,8 @@ public class APIStepDefs {
         String expectedIsbn = randomData.get("isbn").toString();
 
         /**  Data Base **/
-        DB_Util.runQuery("SELECT name, author, isbn FROM books WHERE id = " + bookId);
+        String query = DatabaseHelper.getBookByIdQuery(bookId);
+        DB_Util.runQuery(query);
         Map<String, Object> dbData = DB_Util.getRowMap(1);
 
         String dbIsbn = dbData.get("isbn").toString();
