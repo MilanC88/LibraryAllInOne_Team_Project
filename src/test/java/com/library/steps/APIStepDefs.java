@@ -1,5 +1,6 @@
 package com.library.steps;
 
+import com.library.pages.LoginPage;
 import com.library.pages.BookPage;
 import com.library.utility.*;
 import io.cucumber.java.en.And;
@@ -169,97 +170,64 @@ public class APIStepDefs {
 
     }
 
+    /********** US04 - 1 **********/
+    //No need any steps
 
+    /********** US04 - 2 **********/
 
+    @Then("created user information should match with Database")
+    public void created_user_information_should_match_with_database() {
 
+        int id = jp.getInt("user_id");
 
+        String query="select full_name,email,user_group_id,status,start_date,end_date,address " +
+                "from users where id="+id;
 
+        DB_Util.runQuery(query);
 
 
+        Map<String, Object> actualData = DB_Util.getRowMap(1);
 
+        // Expected --> API --> randomData --> map
 
+        String password= (String) randomData.remove("password");
 
 
+        Assert.assertEquals(randomData,actualData);
 
+        // Add password into randomData
+        randomData.put("password",password);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//05 - OH
-    String token;
-    @Given("I logged Library api with credentials {string} and {string}")
-    public void i_logged_library_api_with_credentials_and(String email, String password) {
-
-        token = LibraryAPI_Util.getToken(email, password);
+        System.out.println("randomData = " + randomData);
+        System.out.println("actualData = " + actualData);
 
     }
 
-    @Given("I send {string} information as request body")
-    public void i_send_information_as_request_body(String key) {
+    @Then("created user should be able to login Library UI")
+    public void created_user_should_be_able_to_login_library_ui() throws InterruptedException {
 
-        givenPart.formParam(key, token);
+        LoginPage loginPage=new LoginPage();
+
+        String email = (String) randomData.get("email");
+
+        String password = (String) randomData.get("password");
+
+        loginPage.login(email,password);
+
+        BookPage bookPage=new BookPage();
+        BrowserUtil.waitForVisibility(bookPage.accountHolderName,15);
+
+    }
+    @Then("created user name should appear in Dashboard Page")
+    public void created_user_name_should_appear_in_dashboard_page() {
+
+        BookPage bookPage=new BookPage();
+
+        String uiFullName = bookPage.accountHolderName.getText();
+
+        String apiFullName = (String) randomData.get("full_name");
+
+        Assert.assertEquals(apiFullName,uiFullName);
 
     }
 
