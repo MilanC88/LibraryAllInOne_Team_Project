@@ -231,4 +231,26 @@ public class APIStepDefs {
 
     }
 
+
+    //05
+
+    String token;
+
+    @Given("I logged Library api with credentials {string} and {string}")
+    public void i_logged_library_api_with_credentials_and(String email, String password) {
+
+        token = LibraryAPI_Util.getToken(email, password);
+
+    }
+
+    @Given("I send {string} information as request body")
+    public void i_send_information_as_request_body(String key) {
+
+
+        givenPart.formParam(key, token);
+
+
+    }
+
+
 }
